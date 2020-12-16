@@ -16,13 +16,19 @@ public class CustomClassLoader extends ClassLoader {
         this.parent = parent;
     }
 
-    public Class loadClass(String name) throws ClassNotFoundException {
+    public Class loadClass(String classPath) throws ClassNotFoundException {
         try {
-            return super.loadClass(name);
+            /**
+             * Vì java sẽ load cả các class cha, vì vậy hãy để java tự tìm kiếm trước, nếu không có mới tìm bằng bytecode.
+             * Có thể chỉnh sửa đoạn này tùy theo nhu cầu
+             */
+            return super.loadClass(classPath);
         } catch (Exception e) {
         }
         try {
-            String url = "file:" + WORKING_DIR + "\\byteCode\\authen\\DefaultBaseImpl.txt";
+            String out = WORKING_DIR + "\\byteCode\\" + classPath.replace(".", "\\");
+
+            String url = "file:" +out;
             URL myUrl = new URL(url);
             URLConnection connection = myUrl.openConnection();
             InputStream input = connection.getInputStream();
@@ -37,7 +43,7 @@ public class CustomClassLoader extends ClassLoader {
             input.close();
 
             byte[] classData = buffer.toByteArray();
-            return defineClass(name,
+            return defineClass(classPath,
                     classData, 0, classData.length);
 
         } catch (MalformedURLException e) {
