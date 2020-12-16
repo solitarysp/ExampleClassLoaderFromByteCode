@@ -56,7 +56,7 @@ Vagrantfile
 .vscode
 
 dist/*
-
+target
 tags
 
 # Editor backups
